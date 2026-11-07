@@ -20,6 +20,22 @@ const VARIATION_OPTIONS = ["No", "Add Glitter", "Patchwork"];
 const MAX_PHOTOS = 3;
 const MAX_TOTAL_BYTES = 9.5 * 1024 * 1024; // FormSubmit allows 10 MB per submission
 
+// Quick check that FormSubmit is answering before we leave the page. During an
+// outage its server hangs (~20s, then a Cloudflare error page), so a short
+// timeout lets us keep the visitor here with their answers intact instead.
+async function formServiceIsUp() {
+  try {
+    await fetch("https://formsubmit.co/", {
+      mode: "no-cors",
+      cache: "no-store",
+      signal: AbortSignal.timeout(8000),
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Shrink phone photos so 3 of them comfortably fit under the upload limit.
 async function compressImage(file, maxSide = 1800, quality = 0.82) {
   try {
@@ -97,6 +113,7 @@ export default function About() {
   const [photoError, setPhotoError] = useState("");
   const [dragOver, setDragOver]     = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [sendError, setSendError]   = useState(false);
 
   // If the visitor comes Back after submitting, re-enable the button.
   useEffect(() => {
@@ -148,7 +165,16 @@ export default function About() {
     }
 
     setSubmitting(true);
-    const files = await Promise.all(photos.map((p) => compressImage(p.file)));
+    setSendError(false);
+    const [files, serviceUp] = await Promise.all([
+      Promise.all(photos.map((p) => compressImage(p.file))),
+      formServiceIsUp(),
+    ]);
+    if (!serviceUp) {
+      setSubmitting(false);
+      setSendError(true);
+      return;
+    }
     const total = files.reduce((sum, f) => sum + f.size, 0);
     if (total > MAX_TOTAL_BYTES) {
       setSubmitting(false);
@@ -339,6 +365,16 @@ export default function About() {
                   <button type="submit" className="bk-btn" disabled={submitting}>
                     {submitting ? "Sending..." : "Send Booking Request"}
                   </button>
+                  {sendError && (
+                    <p className="bk-error" role="alert">
+                      We couldn&rsquo;t send your request right now &mdash; your answers are still here.
+                      Please try again in a few minutes, or email your request and reference photos
+                      to <a href={EMAIL_HREF}>{EMAIL_DISPLAY}</a>.
+                    </p>
+                  )}
+                  <p className="bk-submit__note">
+                    Trouble sending? Email us at <a href={EMAIL_HREF}>{EMAIL_DISPLAY}</a>.
+                  </p>
                   <p className="bk-submit__note">
                     A nonrefundable $100 deposit is required to book your appointment.
                     See the <Link to="/faq">FAQ</Link> for pricing and policies.
