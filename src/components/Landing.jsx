@@ -1,4 +1,3 @@
-import { INTAKE_URL } from "../constants/company";
 import { Link } from "react-router-dom";
 import { NAV_LINKS } from "../constants/navigation";
 const BASE = import.meta.env.BASE_URL;
@@ -20,9 +19,9 @@ export default function Landing() {
             Dark &amp; Macabre Illustrative Blackwork · Custom Tattoo Art
           </p>
           <div className="landing-hero__actions">
-            <a href={INTAKE_URL} target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--lg">
+            <Link to="/about" className="btn btn--primary btn--lg">
               Book With Me
-            </a>
+            </Link>
             <Link to="/gallery" className="btn btn--outline btn--lg">
               Gallery
             </Link>

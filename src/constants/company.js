@@ -1,7 +1,6 @@
 export const PHONE_HREF     = "tel:5555555555";
 export const EMAIL_DISPLAY  = "GoldenOrbAtelier@gmail.com";
 export const EMAIL_HREF     = "mailto:GoldenOrbAtelier@gmail.com";
-export const INTAKE_URL     = "https://docs.google.com/forms/d/e/1FAIpQLSc7ADg1rNFSZN7bmfregi51gLGrqPGKo4c3HkuyeSofc7zCuQ/viewform?usp=publish-editor";
 export const TAGLINE        = "Tattoo & Art For The Haunted Heart";
 export const Artists_NOTE = "Artists NOTE PLACEHOLDER";
 export const CDN        = "https://www.Golden Orb Atelier.com/_files/ugd/";
