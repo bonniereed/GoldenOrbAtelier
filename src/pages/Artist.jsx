@@ -54,7 +54,7 @@ function ArtistCard({ artist, reversed }) {
           ) : (
             <span className="artist-card__waitlist">Currently on waitlist — check back soon</span>
           )}
-          <Link to={`/gallery?artist=${encodeURIComponent(artist.name.split(" ")[0])}`} className="btn btn--ghost">Check it out →</Link>
+          <Link to={`/gallery?artist=${encodeURIComponent(artist.name)}`} className="btn btn--ghost">Check it out →</Link>
         </div>
       </div>
     </div>

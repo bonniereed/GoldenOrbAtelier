@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BsEnvelopeAt, BsClock, BsGeoAlt, BsUpload, BsCheckLg, BsInstagram } from "react-icons/bs";
 import PageBanner from "../components/PageBanner";
@@ -88,7 +88,7 @@ export default function About() {
   const formRef    = useRef(null);
   const pickerRef  = useRef(null);
   const dropRef    = useRef(null);
-  const fileRefs   = [useRef(null), useRef(null), useRef(null)];
+  const fileRefs   = useRef([]); // the 3 hidden file inputs actually sent with the form
   const { search } = useLocation();
   const sent       = new URLSearchParams(search).get("sent") === "1";
   const map        = mapsLink();
@@ -97,6 +97,13 @@ export default function About() {
   const [photoError, setPhotoError] = useState("");
   const [dragOver, setDragOver]     = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // If the visitor comes Back after submitting, re-enable the button.
+  useEffect(() => {
+    const reset = (e) => { if (e.persisted) setSubmitting(false); };
+    window.addEventListener("pageshow", reset);
+    return () => window.removeEventListener("pageshow", reset);
+  }, []);
 
   // Where FormSubmit sends the visitor after a successful submission.
   const nextUrl = typeof window !== "undefined"
@@ -151,11 +158,11 @@ export default function About() {
 
     // Put each photo into its own file field, then do a normal form submit
     // (FormSubmit only attaches files on a regular, non-AJAX submission).
-    fileRefs.forEach((ref, i) => {
+    fileRefs.current.forEach((input, i) => {
       const dt = new DataTransfer();
       if (files[i]) dt.items.add(files[i]);
-      ref.current.files = dt.files;
-      ref.current.disabled = !files[i];
+      input.files = dt.files;
+      input.disabled = !files[i];
     });
     form.submit();
   };
@@ -311,8 +318,8 @@ export default function About() {
                   {photoError && <p className="bk-error" role="alert">{photoError}</p>}
 
                   {/* The photos actually sent with the form */}
-                  {fileRefs.map((ref, i) => (
-                    <input key={i} ref={ref} type="file" name={`Reference Photo ${i + 1}`} className="bk-hidden" tabIndex={-1} aria-hidden="true" />
+                  {[0, 1, 2].map((i) => (
+                    <input key={i} ref={(el) => { fileRefs.current[i] = el; }} type="file" name={`Reference Photo ${i + 1}`} className="bk-hidden" tabIndex={-1} aria-hidden="true" />
                   ))}
                 </Section>
 
