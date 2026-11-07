@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BsEnvelopeAt, BsClock, BsGeoAlt, BsUpload, BsCheckLg, BsInstagram } from "react-icons/bs";
 import PageBanner from "../components/PageBanner";
 import { useReveal } from "../hooks/useReveal";
 import {
   EMAIL_HREF, EMAIL_DISPLAY,
   BOOKING_EMBED_URL,
-  BOOKING_EMAIL,
+  BOOKING_FORM_URL,
   STUDIO_ADDRESS,
   mapsLink,
   INSTAGRAM_URL, INSTAGRAM_HANDLE,
@@ -18,23 +18,7 @@ const STYLE_OPTIONS     = ["Color", "Blackwork", "A mix of both"];
 const VARIATION_OPTIONS = ["No", "Add Glitter", "Patchwork"];
 
 const MAX_PHOTOS = 3;
-const MAX_TOTAL_BYTES = 9.5 * 1024 * 1024; // FormSubmit allows 10 MB per submission
-
-// Quick check that FormSubmit is answering before we leave the page. During an
-// outage its server hangs (~20s, then a Cloudflare error page), so a short
-// timeout lets us keep the visitor here with their answers intact instead.
-async function formServiceIsUp() {
-  try {
-    await fetch("https://formsubmit.co/", {
-      mode: "no-cors",
-      cache: "no-store",
-      signal: AbortSignal.timeout(8000),
-    });
-    return true;
-  } catch {
-    return false;
-  }
-}
+const MAX_TOTAL_BYTES = 24 * 1024 * 1024; // Forminit allows 25 MB per submission
 
 // Shrink phone photos so 3 of them comfortably fit under the upload limit.
 async function compressImage(file, maxSide = 1800, quality = 0.82) {
@@ -104,28 +88,16 @@ export default function About() {
   const formRef    = useRef(null);
   const pickerRef  = useRef(null);
   const dropRef    = useRef(null);
-  const fileRefs   = useRef([]); // the 3 hidden file inputs actually sent with the form
   const { search } = useLocation();
   const sent       = new URLSearchParams(search).get("sent") === "1";
   const map        = mapsLink();
+  const navigate   = useNavigate();
 
   const [photos, setPhotos]         = useState([]); // [{ file, url }]
   const [photoError, setPhotoError] = useState("");
   const [dragOver, setDragOver]     = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [sendError, setSendError]   = useState(false);
-
-  // If the visitor comes Back after submitting, re-enable the button.
-  useEffect(() => {
-    const reset = (e) => { if (e.persisted) setSubmitting(false); };
-    window.addEventListener("pageshow", reset);
-    return () => window.removeEventListener("pageshow", reset);
-  }, []);
-
-  // Where FormSubmit sends the visitor after a successful submission.
-  const nextUrl = typeof window !== "undefined"
-    ? `${window.location.origin}${window.location.pathname}#/about?sent=1`
-    : "";
 
   const addFiles = (list) => {
     const picked = Array.from(list || []).filter(isImage);
@@ -166,31 +138,33 @@ export default function About() {
 
     setSubmitting(true);
     setSendError(false);
-    const [files, serviceUp] = await Promise.all([
-      Promise.all(photos.map((p) => compressImage(p.file))),
-      formServiceIsUp(),
-    ]);
-    if (!serviceUp) {
-      setSubmitting(false);
-      setSendError(true);
-      return;
-    }
+    const files = await Promise.all(photos.map((p) => compressImage(p.file)));
     const total = files.reduce((sum, f) => sum + f.size, 0);
     if (total > MAX_TOTAL_BYTES) {
       setSubmitting(false);
-      setPhotoError("Those photos are too large to send together (10 MB max). Try smaller or fewer photos.");
+      setPhotoError("Those photos are too large to send together (25 MB max). Try smaller or fewer photos.");
       return;
     }
 
-    // Put each photo into its own file field, then do a normal form submit
-    // (FormSubmit only attaches files on a regular, non-AJAX submission).
-    fileRefs.current.forEach((input, i) => {
-      const dt = new DataTransfer();
-      if (files[i]) dt.items.add(files[i]);
-      input.files = dt.files;
-      input.disabled = !files[i];
-    });
-    form.submit();
+    // Send in the background so the visitor stays here: on success show the
+    // thank-you message, on failure keep their answers and offer email instead.
+    const data = new FormData(form);
+    files.forEach((f) => data.append("fi-file-reference_photos[]", f, f.name));
+    try {
+      const res = await fetch(BOOKING_FORM_URL, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(60000),
+      });
+      if (!res.ok) throw new Error(`Form service responded ${res.status}`);
+      navigate("/about?sent=1");
+    } catch (err) {
+      console.error("Booking request failed:", err);
+      setSendError(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -257,32 +231,25 @@ export default function About() {
               <form
                 ref={formRef}
                 onSubmit={handleSubmit}
-                action={`https://formsubmit.co/${BOOKING_EMAIL}`}
-                method="POST"
-                encType="multipart/form-data"
                 className="bk-form"
                 noValidate
               >
-                {/* FormSubmit settings */}
-                <input type="hidden" name="_subject"  value="New Tattoo Booking Request" />
-                <input type="hidden" name="_template" value="table" />
-                <input type="hidden" name="_captcha"  value="false" />
-                <input type="hidden" name="_next"     value={nextUrl} />
-                <input type="text"   name="_honey" className="bk-hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+                {/* Spam trap: real visitors never fill this in */}
+                <input type="text" name="_gotcha" className="bk-hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
                 <Section num="I" title="About You" desc="How I can reach you.">
                   <div className="bk-grid">
                     <div className="bk-field" style={{ gridColumn: "1 / -1" }}>
                       <Label htmlFor="name">Name</Label>
-                      <input id="name" name="Name" type="text" required autoComplete="name" className="bk-input" placeholder="First and last name" />
+                      <input id="name" name="fi-text-name" type="text" required autoComplete="name" className="bk-input" placeholder="First and last name" />
                     </div>
                     <div className="bk-field">
                       <Label htmlFor="email">Email</Label>
-                      <input id="email" name="email" type="email" required autoComplete="email" className="bk-input" placeholder="you@email.com" />
+                      <input id="email" name="fi-sender-email" type="email" required autoComplete="email" className="bk-input" placeholder="you@email.com" />
                     </div>
                     <div className="bk-field">
                       <Label htmlFor="phone">Phone Number</Label>
-                      <input id="phone" name="Phone" type="tel" required autoComplete="tel" className="bk-input" placeholder="(555) 000-0000" />
+                      <input id="phone" name="fi-text-phone" type="tel" required autoComplete="tel" className="bk-input" placeholder="(555) 000-0000" />
                     </div>
                   </div>
                 </Section>
@@ -290,15 +257,15 @@ export default function About() {
                 <Section num="II" title="Your Tattoo" desc="The more detail, the better.">
                   <div className="bk-field">
                     <Label htmlFor="idea">Tattoo Idea</Label>
-                    <textarea id="idea" name="Tattoo Idea" required className="bk-input" placeholder="Subject, mood, any elements you'd love to include, things you'd like to avoid..." />
+                    <textarea id="idea" name="fi-text-tattoo_idea" required className="bk-input" placeholder="Subject, mood, any elements you'd love to include, things you'd like to avoid..." />
                   </div>
                   <div className="bk-field">
                     <Label htmlFor="placement">Location on the Body</Label>
-                    <input id="placement" name="Location on the Body" type="text" required className="bk-input" placeholder="e.g. outer left forearm, back of calf" />
+                    <input id="placement" name="fi-text-placement" type="text" required className="bk-input" placeholder="e.g. outer left forearm, back of calf" />
                   </div>
-                  <Choices name="Size"       label="Roughly how many inches?" options={SIZE_OPTIONS} />
-                  <Choices name="Style"      label="Style"                    options={STYLE_OPTIONS} />
-                  <Choices name="Variations" label="Variations"               options={VARIATION_OPTIONS} />
+                  <Choices name="fi-radio-size"       label="Roughly how many inches?" options={SIZE_OPTIONS} />
+                  <Choices name="fi-radio-style"      label="Style"                    options={STYLE_OPTIONS} />
+                  <Choices name="fi-radio-variations" label="Variations"               options={VARIATION_OPTIONS} />
                 </Section>
 
                 <Section
@@ -343,21 +310,16 @@ export default function About() {
                     </div>
                   )}
                   {photoError && <p className="bk-error" role="alert">{photoError}</p>}
-
-                  {/* The photos actually sent with the form */}
-                  {[0, 1, 2].map((i) => (
-                    <input key={i} ref={(el) => { fileRefs.current[i] = el; }} type="file" name={`Reference Photo ${i + 1}`} className="bk-hidden" tabIndex={-1} aria-hidden="true" />
-                  ))}
                 </Section>
 
                 <Section num="IV" title="Final Details" desc="Anything else I should know.">
                   <div className="bk-field">
                     <Label htmlFor="allergies" optional>Allergies?</Label>
-                    <input id="allergies" name="Allergies" type="text" className="bk-input" placeholder="Nuts, adhesives, etc." />
+                    <input id="allergies" name="fi-text-allergies" type="text" className="bk-input" placeholder="Nuts, adhesives, etc." />
                   </div>
                   <div className="bk-field">
                     <Label htmlFor="questions" optional>Any questions for me?</Label>
-                    <textarea id="questions" name="Questions" className="bk-input bk-input--short" placeholder="Ask away!" />
+                    <textarea id="questions" name="fi-text-questions" className="bk-input bk-input--short" placeholder="Ask away!" />
                   </div>
                 </Section>
 

@@ -14,7 +14,8 @@ export const BOOKING_EMBED_URL = "";
 // The FIRST submission sends an activation email to this address. Click "Activate" in it,
 // and FormSubmit will also give you a random alias string you can paste here instead of
 // the email address to keep it hidden from spam bots.
-export const BOOKING_EMAIL = "booking@goldenorbatelier.com";
+// Booking form backend (Forminit). Notifications go to booking@goldenorbatelier.com.
+export const BOOKING_FORM_URL = "https://forminit.com/f/e4zmm2y67mb";
 
 // Studio address: shown on the booking page and opened in the visitor's maps app when tapped.
 export const STUDIO_ADDRESS = "1017 N Central Expy Ste 200, Plano, TX 75075";
