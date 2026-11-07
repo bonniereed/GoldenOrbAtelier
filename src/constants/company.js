@@ -1,6 +1,6 @@
 export const PHONE_HREF     = "tel:5555555555";
-export const EMAIL_DISPLAY  = "GoldenOrbAtelier@gmail.com";
-export const EMAIL_HREF     = "mailto:GoldenOrbAtelier@gmail.com";
+export const EMAIL_DISPLAY  = "booking@goldenorbatelier.com";
+export const EMAIL_HREF     = "mailto:booking@goldenorbatelier.com";
 export const TAGLINE        = "Tattoo & Art For The Haunted Heart";
 export const Artists_NOTE = "Artists NOTE PLACEHOLDER";
 export const CDN        = "https://www.Golden Orb Atelier.com/_files/ugd/";
@@ -14,7 +14,7 @@ export const BOOKING_EMBED_URL = "";
 // The FIRST submission sends an activation email to this address. Click "Activate" in it,
 // and FormSubmit will also give you a random alias string you can paste here instead of
 // the email address to keep it hidden from spam bots.
-export const BOOKING_EMAIL = "laura@goldenorbatelier.com";
+export const BOOKING_EMAIL = "booking@goldenorbatelier.com";
 
 // Studio address: shown on the booking page and opened in the visitor's maps app when tapped.
 export const STUDIO_ADDRESS = "1017 N Central Expy Ste 200, Plano, TX 75075";
