@@ -240,6 +240,7 @@ export default function About() {
                 {/* FormSubmit settings */}
                 <input type="hidden" name="_subject"  value="New Tattoo Booking Request" />
                 <input type="hidden" name="_template" value="table" />
+                <input type="hidden" name="_captcha"  value="false" />
                 <input type="hidden" name="_next"     value={nextUrl} />
                 <input type="text"   name="_honey" className="bk-hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
