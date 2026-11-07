@@ -310,6 +310,8 @@ textarea.bk-input--short { min-height: 90px; }
   line-height: 1.6;
 }
 .bk-submit__note a { text-decoration: underline; text-underline-offset: 3px; }
+.bk-submit .bk-error { max-width: 30rem; line-height: 1.6; }
+.bk-submit .bk-error a { color: inherit; -webkit-text-fill-color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 
 /* Success */
 .bk-success { text-align: center; padding: 1.5rem 0 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
