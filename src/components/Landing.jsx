@@ -1,11 +1,10 @@
-import { INTAKE_URL } from "../constants/company";
 import { Link } from "react-router-dom";
 import { NAV_LINKS } from "../constants/navigation";
 const BASE = import.meta.env.BASE_URL;
 const LOGO       = `${BASE}assets/Golden-Orb-Atelier.png`;
 const WEB     = `${BASE}assets/web.png`;
-const FOREARM = `${BASE}assets/gallery/goa-4.png`;
-const MOON    = `${BASE}assets/gallery/goa-5.png`;
+const FOREARM = `${BASE}assets/gallery/goa-4.jpg`;
+const MOON    = `${BASE}assets/gallery/goa-5.jpg`;
 
 export default function Landing() {
   return (
@@ -20,9 +19,9 @@ export default function Landing() {
             Dark &amp; Macabre Illustrative Blackwork · Custom Tattoo Art
           </p>
           <div className="landing-hero__actions">
-            <a href={INTAKE_URL} target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--lg">
+            <Link to="/about" className="btn btn--primary btn--lg">
               Book With Me
-            </a>
+            </Link>
             <Link to="/gallery" className="btn btn--outline btn--lg">
               Gallery
             </Link>
@@ -42,13 +41,13 @@ export default function Landing() {
         </div>
         <div className="landing-work__grid">
           <div className="landing-work__piece landing-work__piece--large">
-            <img src={FOREARM} alt="Forearm piece" className="landing-work__img" />
+            <img src={FOREARM} alt="Death Encapsulated — illustrative blackwork forearm tattoo" className="landing-work__img" loading="lazy" decoding="async" />
             <div className="landing-work__piece-overlay">
               <span>Illustrative Blackwork</span>
             </div>
           </div>
           <div className="landing-work__piece">
-            <img src={MOON} alt="Portfolio work" className="landing-work__img" />
+            <img src={MOON} alt="Moon Woman — illustrative blackwork tattoo" className="landing-work__img" loading="lazy" decoding="async" />
             <div className="landing-work__piece-overlay">
               <span>Moon Woman</span>
             </div>

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import PageBanner from "../components/PageBanner";
 import { useReveal } from "../hooks/useReveal";
-import { INTAKE_URL } from "../constants/company";
 const base = import.meta.env.BASE_URL;
 
 const ARTISTS = [
@@ -48,13 +47,13 @@ function ArtistCard({ artist, reversed }) {
 
         <div className="artist-card__actions">
           {artist.bookable ? (
-            <a href={INTAKE_URL} target="_blank" rel="noopener noreferrer" className="btn btn--primary">
+            <Link to="/about" className="btn btn--primary">
               Book with {artist.name}
-            </a>
+            </Link>
           ) : (
             <span className="artist-card__waitlist">Currently on waitlist — check back soon</span>
           )}
-          <Link to={`/gallery?artist=${encodeURIComponent(artist.name.split(" ")[0])}`} className="btn btn--ghost">Check it out →</Link>
+          <Link to={`/gallery?artist=${encodeURIComponent(artist.name)}`} className="btn btn--ghost">Check it out →</Link>
         </div>
       </div>
     </div>

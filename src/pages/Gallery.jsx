@@ -42,8 +42,8 @@ function GalleryCard({ item }) {
 
 export default function Gallery() {
   const [searchParams] = useSearchParams();
-  const [activeArtist, setActiveArtist] = useState(searchParams.get("artist") || "All");
-  const [activeStyle,  setActiveStyle]  = useState("All");
+  const [activeArtist] = useState(searchParams.get("artist") || "All");
+  const [activeStyle]  = useState("All");
   const revealRef = useReveal();
 
   const filtered = useMemo(() => gallery.filter(item => {

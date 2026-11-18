@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Not Found | Golden Orb Atelier</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="robots" content="noindex" />
+    <script>
+      // The site uses hash routes (/#/gallery). Send stray paths like /gallery
+      // to the matching in-app page; anything unknown lands on the in-app 404.
+      (function () {
+        var path = location.pathname.replace(/\/+$/, "").toLowerCase();
+        var known = { "/about": "/about", "/artist": "/Artist", "/gallery": "/gallery", "/faq": "/faq" };
+        location.replace("/#" + (known[path] || (path ? "/not-found" : "/")));
+      })();
+    </script>
+    <style>
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0A0A0A; color: #C6AE73; font-family: Georgia, serif; }
+      a { color: #C6AE73; }
+    </style>
+  </head>
+  <body>
+    <p>Lost in the web… <a href="/">return home</a>.</p>
+  </body>
+</html>
