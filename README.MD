@@ -4,7 +4,7 @@ This website was drafted for approval from Golden Orb Atelier
 
 ## Usage
 
-Click on the link https://bonniereed.github.io/Golden-Orb-Atelier/#/ and goooo
+Click on the link https://goldenorbatelier.com and goooo
 
 ## This website was designed by yours truly
 Bonnie Reed
