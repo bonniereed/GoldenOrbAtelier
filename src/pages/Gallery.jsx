@@ -20,7 +20,7 @@ function GalleryCard({ item }) {
         ) : (
           <img
             src={item.src}
-            alt={item.title ? `${item.title}, ${item.style.toLowerCase()} tattoo` : `${item.style} tattoo by ${item.Artists}`}
+            alt={`${item.title ? item.title + ", " : ""}${item.style.toLowerCase()} tattoo by ${item.Artists} in Plano, TX`}
             className="gallery-card__img"
             onError={() => setErrored(true)}
             loading="lazy"

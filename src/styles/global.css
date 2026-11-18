@@ -1060,6 +1060,11 @@ main {
 
 .footer__dot { color: var(--color-border); }
 
+.footer__address {
+  font-style: normal;
+  font-size: 0.85rem;
+}
+
 .footer__nav {
   display: flex;
   flex-wrap: wrap;
@@ -1142,10 +1147,6 @@ main {
   gap: 1rem;
   justify-content: center;
   margin-bottom: 1rem;
-}
-
-.landing-phone-btn {
-  font-family: var(--font-mono);
 }
 
 /* Attorney note */

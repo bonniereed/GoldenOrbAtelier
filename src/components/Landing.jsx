@@ -43,13 +43,13 @@ export default function Landing() {
         </div>
         <div className="landing-work__grid">
           <div className="landing-work__piece landing-work__piece--large">
-            <img src={FOREARM} alt="Death Encapsulated — illustrative blackwork forearm tattoo" className="landing-work__img" loading="lazy" decoding="async" />
+            <img src={FOREARM} alt="Death Encapsulated, illustrative blackwork forearm tattoo by Laura Weaver in Plano, TX" className="landing-work__img" loading="lazy" decoding="async" />
             <div className="landing-work__piece-overlay">
               <span>Illustrative Blackwork</span>
             </div>
           </div>
           <div className="landing-work__piece">
-            <img src={MOON} alt="Moon Woman — illustrative blackwork tattoo" className="landing-work__img" loading="lazy" decoding="async" />
+            <img src={MOON} alt="Moon Woman, illustrative blackwork tattoo by Laura Weaver in Plano, TX" className="landing-work__img" loading="lazy" decoding="async" />
             <div className="landing-work__piece-overlay">
               <span>Moon Woman</span>
             </div>

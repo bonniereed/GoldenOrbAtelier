@@ -11,7 +11,7 @@ export default function AppRouter() {
     <Routes>
       <Route path="/"        element={<Home />} />
       <Route path="/about"   element={<About />} />
-      <Route path="/Artist"  element={<Artist />} />
+      <Route path="/artist"  element={<Artist />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/faq"     element={<FAQ />} />
       <Route path="*"        element={<NotFound />} />

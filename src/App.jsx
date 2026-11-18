@@ -6,8 +6,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import RouteAnnouncer from "./components/RouteAnnouncer";
 import "./styles/global.css";
 
-// The site uses hash URLs (#/page), so the skip link moves focus itself
-// instead of using href="#main", which would be read as a route change.
+// The skip link moves focus itself so it works the same in every browser
+// and doesn't add a #main-content entry to the address bar.
 function skipToContent(e) {
   e.preventDefault();
   const main = document.getElementById("main-content");

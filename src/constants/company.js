@@ -1,4 +1,3 @@
-export const PHONE_HREF     = "tel:5555555555";
 export const EMAIL_DISPLAY  = "booking@GoldenOrbAtelier.com";
 export const EMAIL_HREF     = "mailto:booking@goldenorbatelier.com";
 export const TAGLINE        = "Tattoo & Art For The Haunted Heart";

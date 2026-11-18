@@ -1,26 +1,25 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { pageFor, NOT_FOUND, SITE_URL } from "../constants/pages";
 
-const SITE = "Golden Orb Atelier";
+function setMeta(selector, attr, value) {
+  const el = document.head.querySelector(selector);
+  if (el) el.setAttribute(attr, value);
+}
 
-// Browser tab title for each page. Screen readers announce it on navigation.
-const TITLES = {
-  "/":        `${SITE} | Tattoo & Art For The Haunted Heart`,
-  "/artist":  `Meet The Artist | ${SITE}`,
-  "/gallery": `Gallery | ${SITE}`,
-  "/faq":     `FAQ | ${SITE}`,
-  "/about":   `Book a Tattoo | ${SITE}`,
-};
-
-// Gives each page its own title, and after an in-site navigation moves
-// keyboard / screen reader focus to the new page's main heading.
+// Keeps each page's title, description and canonical link up to date while
+// browsing, and after an in-site navigation moves keyboard / screen reader
+// focus to the new page's main heading. Titles live in src/constants/pages.js.
 export default function RouteAnnouncer() {
   const { pathname } = useLocation();
   const firstLoad = useRef(true);
 
   useEffect(() => {
-    const key = pathname.toLowerCase().replace(/\/+$/, "") || "/";
-    document.title = TITLES[key] ?? `Page Not Found | ${SITE}`;
+    const page = pageFor(pathname);
+    const { title, description } = page ?? NOT_FOUND;
+    document.title = title;
+    setMeta('meta[name="description"]', "content", description);
+    if (page) setMeta('link[rel="canonical"]', "href", SITE_URL + page.path);
 
     if (firstLoad.current) { firstLoad.current = false; return; }
     const frame = requestAnimationFrame(() => {
