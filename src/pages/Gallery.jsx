@@ -20,13 +20,14 @@ function GalleryCard({ item }) {
         ) : (
           <img
             src={item.src}
-            alt={item.title || `${item.style} tattoo by ${item.Artists}`}
+            alt={item.title ? `${item.title}, ${item.style.toLowerCase()} tattoo` : `${item.style} tattoo by ${item.Artists}`}
             className="gallery-card__img"
             onError={() => setErrored(true)}
             loading="lazy"
           />
         )}
-        <div className="gallery-card__overlay">
+        {/* Hover overlay repeats the caption below, so screen readers skip it */}
+        <div className="gallery-card__overlay" aria-hidden="true">
           <span className="gallery-card__overlay-style">{item.style}</span>
           <span className="gallery-card__overlay-title">{item.title}</span>
         </div>

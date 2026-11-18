@@ -194,7 +194,7 @@ export default function About() {
         {/* ── Contact strip ── */}
         <div className="bk-contact">
           <span className="bk-contact__item"><BsEnvelopeAt /><a href={EMAIL_HREF}>{EMAIL_DISPLAY}</a></span>
-          <span className="bk-contact__item"><BsInstagram /><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">{INSTAGRAM_HANDLE}</a></span>
+          <span className="bk-contact__item"><BsInstagram /><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">{INSTAGRAM_HANDLE}<span className="sr-only"> (opens in new tab)</span></a></span>
           <span className="bk-contact__item"><BsClock />Appointment Only</span>
           <span className="bk-contact__item">
             <BsGeoAlt />
@@ -202,7 +202,7 @@ export default function About() {
               href={map.href}
               {...(map.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="bk-contact__map"
-              aria-label={`Open ${STUDIO_ADDRESS} in your maps app`}
+              aria-label={`Open ${STUDIO_ADDRESS} in your maps app${map.external ? " (opens in new tab)" : ""}`}
             >
               {STUDIO_ADDRESS}
             </a>

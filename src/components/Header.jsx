@@ -19,23 +19,39 @@ export default function Header() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // Escape closes the mobile menu and returns focus to the menu button.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        document.querySelector(".nav__hamburger")?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
   const close = () => setMenuOpen(false);
 
   return (
-    <nav className={`nav${scrolled ? " nav--scrolled" : ""}`}>
+    <nav className={`nav${scrolled ? " nav--scrolled" : ""}`} aria-label="Main">
       <Link to="/" onClick={close} className="nav__brand">
         <img src={LOGO} alt="" className="nav__brand-img" />
         <span className="nav__brand-name">Golden Orb Atelier</span>
       </Link>
-      <div className={`nav__links${menuOpen ? " nav__links--open" : ""}`}>
+      <div id="site-menu" className={`nav__links${menuOpen ? " nav__links--open" : ""}`}>
         {NAV_LINKS.map(({ label, to }) => (
           <Link key={to} to={to} onClick={close}>{label}</Link>
         ))}
       </div>
       <button
+        type="button"
         className="nav__hamburger"
         onClick={() => setMenuOpen((prev) => !prev)}
-        aria-label="Toggle menu"
+        aria-label={menuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={menuOpen}
+        aria-controls="site-menu"
       >
         {menuOpen ? "✕" : "☰"}
       </button>

@@ -14,7 +14,9 @@ export default function Landing() {
       <section className="landing-hero" style={{ backgroundImage: `url(${WEB})` }}>
         <div className="landing-hero__overlay" />
         <div className="landing-hero__content">
-          <img src={LOGO} alt="Golden Orb Atelier" className="landing-hero__logo" />
+          {/* The logo is the visual title; this heading gives screen readers the same. */}
+          <h1 className="sr-only">Golden Orb Atelier: Tattoo &amp; Art For The Haunted Heart</h1>
+          <img src={LOGO} alt="" className="landing-hero__logo" />
           <p className="landing-hero__sub">
             Dark &amp; Macabre Illustrative Blackwork · Custom Tattoo Art
           </p>

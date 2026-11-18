@@ -22,7 +22,7 @@ export default function Footer() {
           <a href={EMAIL_HREF} className="footer__contact-link">{EMAIL_DISPLAY}</a>
           <span className="footer__dot">·</span>
           <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="footer__contact-link footer__contact-link--ig">
-            <BsInstagram aria-hidden="true" /> {INSTAGRAM_HANDLE}
+            <BsInstagram aria-hidden="true" /> {INSTAGRAM_HANDLE}<span className="sr-only"> (opens in new tab)</span>
           </a>
         </div>
 
