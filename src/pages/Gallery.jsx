@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PageBanner from "../components/PageBanner";
 import { useReveal } from "../hooks/useReveal";
-import gallery, { Artists, STYLES } from "../data/galleryData";
+import gallery, { STYLES } from "../data/galleryData";
 
 function GalleryCard({ item }) {
   const [errored, setErrored] = useState(false);
@@ -20,7 +20,7 @@ function GalleryCard({ item }) {
         ) : (
           <img
             src={item.src}
-            alt={item.title}
+            alt={item.title || `${item.style} tattoo by ${item.Artists}`}
             className="gallery-card__img"
             onError={() => setErrored(true)}
             loading="lazy"
@@ -41,16 +41,28 @@ function GalleryCard({ item }) {
 }
 
 export default function Gallery() {
-  const [searchParams] = useSearchParams();
-  const [activeArtist] = useState(searchParams.get("artist") || "All");
-  const [activeStyle]  = useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
   const revealRef = useReveal();
 
-  const filtered = useMemo(() => gallery.filter(item => {
-    const byArtist = activeArtist === "All" || item.Artists === activeArtist;
-    const byStyle  = activeStyle  === "All" || item.style   === activeStyle;
-    return byArtist && byStyle;
-  }), [activeArtist, activeStyle]);
+  // Group pieces by style, in the order set in galleryData.js
+  const sections = useMemo(() => {
+    const order = [...STYLES, ...gallery.map((g) => g.style).filter((s) => !STYLES.includes(s))];
+    return [...new Set(order)]
+      .map((style) => ({ style, items: gallery.filter((g) => g.style === style) }))
+      .filter((s) => s.items.length > 0);
+  }, []);
+
+  const requested = searchParams.get("style");
+  const active = sections.some((s) => s.style === requested) ? requested : "All";
+  const visible = active === "All" ? sections : sections.filter((s) => s.style === active);
+
+  const choose = (style) => {
+    const next = new URLSearchParams(searchParams);
+    if (style === "All") next.delete("style"); else next.set("style", style);
+    setSearchParams(next, { replace: true });
+  };
+
+  const slug = (s) => "style-" + s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
   return (
     <>
@@ -60,14 +72,32 @@ export default function Gallery() {
       />
       <div className="gallery-page" ref={revealRef}>
 
+        {/* ── Style filter ── */}
+        <nav className="gallery-styles" aria-label="Filter by style">
+          {["All", ...sections.map((s) => s.style)].map((style) => (
+            <button
+              key={style}
+              type="button"
+              className={"gallery-styles__link" + (active === style ? " is-active" : "")}
+              aria-pressed={active === style}
+              onClick={() => choose(style)}
+            >
+              {style}
+            </button>
+          ))}
+        </nav>
 
-        <div className="gallery-grid">
-          {filtered.length === 0 ? (
-            <p className="gallery-empty">No pieces match this filter.</p>
-          ) : (
-            filtered.map(item => <GalleryCard key={item.id} item={item} />)
-          )}
-        </div>
+        {/* ── One section per style ── */}
+        {visible.map(({ style, items }) => (
+          <section key={style} id={slug(style)} className="gallery-section" aria-labelledby={`${slug(style)}-title`}>
+            <header className="gallery-section__head">
+              <h2 id={`${slug(style)}-title`} className="gallery-section__title">{style}</h2>
+            </header>
+            <div className="gallery-grid">
+              {items.map((item) => <GalleryCard key={item.id} item={item} />)}
+            </div>
+          </section>
+        ))}
 
         <div className="gallery-cta">
           <p className="gallery-cta__text">See something you love?</p>
