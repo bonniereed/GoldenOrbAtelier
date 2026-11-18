@@ -24,7 +24,7 @@ function ArtistCard({ artist, reversed }) {
       <div className="artist-card__img-wrap">
         <img
           src={artist.img}
-          alt={artist.name}
+          alt={`${artist.name}, tattoo artist at Golden Orb Atelier in Plano, TX`}
           className="artist-card__img"
           onError={e => { e.currentTarget.style.display = "none"; }}
         />

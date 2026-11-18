@@ -48,10 +48,12 @@ function BatIcon({ size }) {
 export default function BatSwarm() {
   const [bats] = useState(makeBats);
   const [active, setActive] = useState(false);
-  const [done, setDone] = useState(false);
+  // Visitors with "Reduce Motion" turned on never see the swarm.
+  const [done, setDone] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const fired = useRef(false);
 
   useEffect(() => {
+    if (done) return;
     function onScroll() {
       if (fired.current || window.scrollY < 10) return;
       fired.current = true;
@@ -65,7 +67,7 @@ export default function BatSwarm() {
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [bats]);
+  }, [bats, done]);
 
   if (done) return null;
 

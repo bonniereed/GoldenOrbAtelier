@@ -14,7 +14,9 @@ export default function Landing() {
       <section className="landing-hero" style={{ backgroundImage: `url(${WEB})` }}>
         <div className="landing-hero__overlay" />
         <div className="landing-hero__content">
-          <img src={LOGO} alt="Golden Orb Atelier" className="landing-hero__logo" />
+          {/* The logo is the visual title; this heading gives screen readers the same. */}
+          <h1 className="sr-only">Golden Orb Atelier: Tattoo &amp; Art For The Haunted Heart</h1>
+          <img src={LOGO} alt="" className="landing-hero__logo" />
           <p className="landing-hero__sub">
             Dark &amp; Macabre Illustrative Blackwork · Custom Tattoo Art
           </p>
@@ -41,13 +43,13 @@ export default function Landing() {
         </div>
         <div className="landing-work__grid">
           <div className="landing-work__piece landing-work__piece--large">
-            <img src={FOREARM} alt="Death Encapsulated — illustrative blackwork forearm tattoo" className="landing-work__img" loading="lazy" decoding="async" />
+            <img src={FOREARM} alt="Death Encapsulated, illustrative blackwork forearm tattoo by Laura Weaver in Plano, TX" className="landing-work__img" loading="lazy" decoding="async" />
             <div className="landing-work__piece-overlay">
               <span>Illustrative Blackwork</span>
             </div>
           </div>
           <div className="landing-work__piece">
-            <img src={MOON} alt="Moon Woman — illustrative blackwork tattoo" className="landing-work__img" loading="lazy" decoding="async" />
+            <img src={MOON} alt="Moon Woman, illustrative blackwork tattoo by Laura Weaver in Plano, TX" className="landing-work__img" loading="lazy" decoding="async" />
             <div className="landing-work__piece-overlay">
               <span>Moon Woman</span>
             </div>

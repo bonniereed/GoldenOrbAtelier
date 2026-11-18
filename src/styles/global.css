@@ -1060,6 +1060,11 @@ main {
 
 .footer__dot { color: var(--color-border); }
 
+.footer__address {
+  font-style: normal;
+  font-size: 0.85rem;
+}
+
 .footer__nav {
   display: flex;
   flex-wrap: wrap;
@@ -1142,10 +1147,6 @@ main {
   gap: 1rem;
   justify-content: center;
   margin-bottom: 1rem;
-}
-
-.landing-phone-btn {
-  font-family: var(--font-mono);
 }
 
 /* Attorney note */
@@ -2548,7 +2549,6 @@ h1, h2, h3,
   color: var(--color-text);
   -webkit-text-fill-color: var(--color-text);
   text-decoration-color: currentColor;
-  outline: none;
 }
 .gallery-styles__link.is-active {
   color: var(--color-text);
@@ -2582,4 +2582,74 @@ h1, h2, h3,
 @media (max-width: 560px) {
   .gallery-styles { gap: 0.5rem 1.4rem; }
   .gallery-styles__link + .gallery-styles__link::before { content: none; }
+}
+
+/* ============================================================
+   Accessibility
+   ============================================================ */
+
+/* Visually hidden, still read by screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* "Skip to content": hidden until reached with the Tab key */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10000;
+  padding: 0.6rem 1rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-text-fill-color: var(--color-text);
+  border: 1px solid var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+
+/* Gold keyboard focus ring (mouse clicks don't show it) */
+:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 3px;
+}
+/* Headings and <main> only receive focus from code (page changes, skip link) */
+main:focus,
+h1[tabindex="-1"]:focus { outline: none; }
+
+/* Bigger tap areas for small text links, without changing the layout */
+.nav__links a,
+.footer__nav-link,
+.footer__contact-link {
+  padding-block: 0.45rem;
+  margin-block: -0.45rem;
+}
+.gallery-styles__link { min-width: 24px; min-height: 24px; }
+
+/* Respect the "Reduce Motion" setting on phones and computers */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal,
+  .reveal-stagger > * {
+    opacity: 1;
+    transform: none;
+  }
 }

@@ -3,15 +3,27 @@ import Footer   from "./components/Footer";
 import AppRouter from "./router/AppRouter";
 import BatSwarm from "./components/BatSwarm";
 import ScrollToTop from "./components/ScrollToTop";
+import RouteAnnouncer from "./components/RouteAnnouncer";
 import "./styles/global.css";
+
+// The skip link moves focus itself so it works the same in every browser
+// and doesn't add a #main-content entry to the address bar.
+function skipToContent(e) {
+  e.preventDefault();
+  const main = document.getElementById("main-content");
+  main?.focus();
+  main?.scrollIntoView();
+}
 
 export default function App() {
   return (
     <div>
+      <a href="#main-content" className="skip-link" onClick={skipToContent}>Skip to content</a>
       <ScrollToTop />
+      <RouteAnnouncer />
       <BatSwarm />
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <AppRouter />
       </main>
       <Footer />
